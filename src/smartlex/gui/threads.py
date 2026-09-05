@@ -58,9 +58,23 @@ class IndexingThread(QThread):
             self._emit_progress(
                 f"Processing {len(batch_files)} batch(es) in parallel..."
             )
-            D, deferred_files = process_all_batches(
+            D, deferred_files, image_features = process_all_batches(
                 batch_files, self.cfg["TOP_KEYWORDS"]
             )
+
+            # Step 3b: Persist visual image features (pHash + ORB descriptors)
+            if image_features:
+                from smartlex.image.feature_store import ImageFeatureStore
+
+                self._emit_progress(
+                    f"Saving visual features for {len(image_features)} image(s)..."
+                )
+                image_store = ImageFeatureStore.load(self.cfg["IMAGE_INDEX_FILE"])
+                image_store.update(image_features)
+                image_store.save()
+                logger.info(
+                    f"Image feature index saved with {len(image_store)} entries"
+                )
 
             # Save deferred files list
             if deferred_files:
