@@ -2,6 +2,7 @@
 /backups
 /logs
 output.json
+image_index.json
 search_engine.log
 __pycache__
 autocomplete_words.json
