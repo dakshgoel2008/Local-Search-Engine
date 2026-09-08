@@ -186,7 +186,10 @@ class DeferredIndexingThread(QThread):
             try:
                 lower_path = file_to_process.lower()
                 text = ""
-                if lower_path.endswith((".png", ".jpg")):
+                _img_exts = tuple(
+                    f.lower() for f in self.cfg.get("IMAGE_SUPPORTED_FORMATS", [".png", ".jpg", ".jpeg"])
+                )
+                if lower_path.endswith(_img_exts):
                     text = extract_image_text(file_to_process)
 
                 if text:

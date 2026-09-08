@@ -19,6 +19,7 @@ from PyQt5.QtWidgets import (
 from smartlex.core.logger import setup_logger
 from smartlex.core.search_engine import search
 from smartlex.gui.widgets import CustomCompleter
+from smartlex.gui.threads import IndexingThread
 
 logger = setup_logger(__name__)
 
@@ -65,6 +66,9 @@ class MyWidget(QWidget):
         if hasattr(self, 'deferred_thread'):
             self.deferred_thread.cancel()
             self.deferred_thread.wait(1000)
+        if hasattr(self, '_reindex_thread') and self._reindex_thread.isRunning():
+            self._reindex_thread.cancel()
+            self._reindex_thread.wait(2000)
         super().closeEvent(event)
 
     def initUI(self):
@@ -142,6 +146,23 @@ class MyWidget(QWidget):
             }
             QPushButton#ClearButton:pressed {
                 background-color: #bdc3c7;
+            }
+            QPushButton#ReindexButton {
+                background-color: #27ae60;
+                color: white;
+                border: none;
+                font-size: 11pt;
+                padding: 10px 18px;
+            }
+            QPushButton#ReindexButton:hover {
+                background-color: #1e8449;
+            }
+            QPushButton#ReindexButton:pressed {
+                background-color: #196f3d;
+            }
+            QPushButton#ReindexButton:disabled {
+                background-color: #a9dfbf;
+                color: #ffffff;
             }
             QListWidget {
                 border: 2px solid #e0e6ed;
@@ -232,6 +253,17 @@ class MyWidget(QWidget):
         self.clear_button.setMinimumWidth(100)
         self.clear_button.clicked.connect(self.clear_search)
         search_layout.addWidget(self.clear_button)
+
+        # Re-index button
+        self.reindex_button = QPushButton("Re-index PC")
+        self.reindex_button.setObjectName("ReindexButton")
+        self.reindex_button.setMinimumHeight(50)
+        self.reindex_button.setMinimumWidth(130)
+        self.reindex_button.setToolTip(
+            "Scan all drives and rebuild the search index from scratch"
+        )
+        self.reindex_button.clicked.connect(self.start_reindex)
+        search_layout.addWidget(self.reindex_button)
 
         layout.addLayout(search_layout)
 
@@ -443,3 +475,73 @@ class MyWidget(QWidget):
             "padding: 10px; background-color: #f0fdf4; border-radius: 8px; border: 1px solid #bbf7d0; color: #166534; font-weight: bold;"
         )
         logger.info("Index and autocomplete data updated")
+
+    # ── Re-indexing ──────────────────────────────────────────────────────────
+
+    def start_reindex(self):
+        """Launch a full PC re-scan via IndexingThread."""
+        reply = QMessageBox.question(
+            self,
+            "Re-index PC",
+            "This will scan all drives and rebuild the search index from scratch.\n"
+            "It may take several minutes depending on how many files you have.\n\n"
+            "Continue?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if reply != QMessageBox.Yes:
+            return
+
+        # Disable buttons so the user can't start two scans at once
+        self.reindex_button.setEnabled(False)
+        self.search_button.setEnabled(False)
+        self.search_input.setEnabled(False)
+
+        self._set_status(
+            "Starting full PC re-index — this may take a few minutes...",
+            "#f0f7ff", "#bae6fd", "#0284c7",
+        )
+
+        self._reindex_thread = IndexingThread(parent=self)
+        self._reindex_thread.progress.connect(self._on_reindex_progress)
+        self._reindex_thread.finished_signal.connect(self._on_reindex_finished)
+        self._reindex_thread.error_signal.connect(self._on_reindex_error)
+        self._reindex_thread.start()
+        logger.info("Re-index thread started by user")
+
+    def _on_reindex_progress(self, message):
+        """Relay live scan progress to the status bar."""
+        self._set_status(message, "#f0f7ff", "#bae6fd", "#0284c7")
+
+    def _on_reindex_finished(self, new_index, new_words):
+        """Called when IndexingThread completes successfully."""
+        self.update_index(new_index, new_words)
+        self._set_status(
+            f"Re-index complete: {len(new_index)} files indexed, "
+            f"{len(new_words)} autocomplete words.",
+            "#f0fdf4", "#bbf7d0", "#166534",
+        )
+        self._restore_buttons()
+        logger.info(f"Re-index finished: {len(new_index)} files, {len(new_words)} words")
+
+    def _on_reindex_error(self, error_msg):
+        """Called when IndexingThread signals an error."""
+        self._set_status(f"Re-index error: {error_msg}", "#fdf2f2", "#fecaca", "#ef4444")
+        self._restore_buttons()
+        QMessageBox.warning(
+            self, "Re-index Error",
+            f"An error occurred during re-indexing:\n{error_msg}"
+        )
+
+    def _restore_buttons(self):
+        self.reindex_button.setEnabled(True)
+        self.search_button.setEnabled(True)
+        self.search_input.setEnabled(True)
+        self.search_input.setFocus()
+
+    def _set_status(self, text, bg, border, color):
+        self.status_label.setText(text)
+        self.status_label.setStyleSheet(
+            f"padding: 10px; background-color: {bg}; border-radius: 8px; "
+            f"border: 1px solid {border}; color: {color}; font-weight: bold;"
+        )

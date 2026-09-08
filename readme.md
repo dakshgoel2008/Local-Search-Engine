@@ -1,4 +1,4 @@
-# SmartLex — Offline Content-Based Document Retrieval Using Lexical Indexing
+# SmartLex - Offline Content-Based Document Retrieval Using Lexical Indexing
 
 SmartLex is a lightweight, privacy-preserving **offline desktop search engine** designed for efficient content-based retrieval from local **PDF, DOCX, and image files**. Instead of relying only on filenames, SmartLex analyzes file content, builds searchable indexes, ranks results by relevance, and supports visual similarity search for images.
 
@@ -6,7 +6,7 @@ The system combines **lexical indexing, RAKE keyword extraction, SQLite FTS5, BM
 
 ---
 
-## 📌 Project Overview
+## Project Overview
 
 Finding a specific document or image in a large local collection can be difficult when users remember the **content** but not the filename or location.
 
@@ -34,9 +34,9 @@ SmartLex addresses these limitations by providing a **local content-based retrie
 
 ---
 
-# ✨ Key Features
+# Key Features
 
-### 📄 Text Retrieval
+### Text Retrieval
 
 * PDF and DOCX content extraction
 * RAKE-based keyword extraction
@@ -47,7 +47,7 @@ SmartLex addresses these limitations by providing a **local content-based retrie
 * Multi-word query support
 * Ranked search results
 
-### 🖼️ Image Retrieval
+### Image Retrieval
 
 * Image indexing
 * Perceptual hashing (pHash)
@@ -56,7 +56,7 @@ SmartLex addresses these limitations by providing a **local content-based retrie
 * Combined visual similarity ranking
 * Near-duplicate image detection
 
-### ⚡ Performance
+### Performance
 
 * Multiprocessing for initial indexing
 * Persistent indexes
@@ -64,7 +64,7 @@ SmartLex addresses these limitations by providing a **local content-based retrie
 * Avoids unnecessary reprocessing
 * Resource-aware processing
 
-### 🖥️ User Interface
+### User Interface
 
 * Desktop GUI
 * Search box
@@ -74,7 +74,7 @@ SmartLex addresses these limitations by providing a **local content-based retrie
 * Direct file access
 * Clear/search controls
 
-### 🔄 Dynamic Indexing
+### Dynamic Indexing
 
 * Detects file creation
 * Detects file modification
@@ -82,7 +82,7 @@ SmartLex addresses these limitations by providing a **local content-based retrie
 * Updates the index incrementally
 * Reduces the need for complete re-indexing
 
-### 🔐 Privacy
+### Privacy
 
 All major processing takes place locally.
 
@@ -96,7 +96,7 @@ SmartLex does **not require**:
 
 ---
 
-# 🏗️ System Architecture
+# System Architecture
 
 The following architecture represents the overall SmartLex framework.
 
@@ -121,7 +121,7 @@ The architecture also supports **incremental indexing** and supporting services 
 
 ---
 
-# 📊 Data Flow Diagram
+# Data Flow Diagram
 
 ![SmartLex Data Flow Diagram](images/dfd.png)
 
@@ -171,7 +171,7 @@ Ranked Visual Results
 
 ---
 
-# 👤 Use Case Diagram
+# Use Case Diagram
 
 ![SmartLex Use Case Diagram](images/use_case_diagram.png)
 
@@ -201,7 +201,7 @@ The system internally performs:
 
 ---
 
-# 🧩 Class Diagram
+# Class Diagram
 
 ![SmartLex Class Diagram](images/class_diagram.png)
 
@@ -220,7 +220,7 @@ This modular structure allows individual components to be maintained and extende
 
 ---
 
-# 🔁 Sequence Diagram
+# Sequence Diagram
 
 ![SmartLex Sequence Diagram](images/sequence_diagram.png)
 
@@ -239,7 +239,7 @@ A typical search operation follows this sequence:
 
 ---
 
-# 🔍 How SmartLex Works
+# How SmartLex Works
 
 ## 1. File Discovery
 
@@ -321,7 +321,7 @@ This allows users to see the most useful results near the top rather than receiv
 
 ---
 
-# 🖼️ Image Search
+# Image Search
 
 SmartLex extends content-based retrieval beyond text documents by supporting visual similarity search.
 
@@ -368,7 +368,7 @@ Visual Search Results
 
 ---
 
-# 🔄 Incremental Indexing
+# Incremental Indexing
 
 A major objective of SmartLex is to avoid rebuilding the entire index whenever the local file collection changes.
 
@@ -394,7 +394,7 @@ This reduces unnecessary computation during subsequent executions.
 
 ---
 
-# ⚡ Parallel Processing
+# Parallel Processing
 
 Initial indexing can involve a large number of files.
 
@@ -420,7 +420,7 @@ Parallel processing is primarily beneficial during the initial indexing workload
 
 ---
 
-# 🛠️ Technology Stack
+# Technology Stack
 
 | Component              | Technology               |
 | ---------------------- | ------------------------ |
@@ -440,7 +440,7 @@ Parallel processing is primarily beneficial during the initial indexing workload
 
 ---
 
-# 📁 Project Structure
+# Project Structure
 
 ```text
 Local-Search-Engine/
@@ -482,7 +482,7 @@ Local-Search-Engine/
 
 ---
 
-# 💻 Installation
+# Installation
 
 ## Prerequisites
 
@@ -528,7 +528,7 @@ pip install -r requirements.txt
 
 ---
 
-# 🔤 OCR Configuration
+# OCR Configuration
 
 OCR functionality uses **Tesseract OCR** where required.
 
@@ -552,7 +552,7 @@ If the command returns the installed Tesseract version, OCR is correctly availab
 
 ---
 
-# ⚙️ Configuration
+# Configuration
 
 SmartLex provides configuration through `config.json`.
 
@@ -595,7 +595,7 @@ This helps:
 
 ---
 
-# ▶️ Running SmartLex
+# Running SmartLex
 
 Activate the virtual environment and execute:
 
@@ -616,7 +616,7 @@ The interface provides:
 
 ---
 
-# 🔎 Performing Text Search
+# Performing Text Search
 
 1. Launch SmartLex.
 2. Ensure the desired document directory is configured.
@@ -652,7 +652,7 @@ Ranked Results
 
 ---
 
-# 🖼️ Performing Image Similarity Search
+# Performing Image Similarity Search
 
 SmartLex supports visual similarity retrieval using pHash and ORB.
 
@@ -698,7 +698,7 @@ docs/image_search.md
 
 ---
 
-# 🧪 Testing
+# Testing
 
 SmartLex includes automated and manual testing.
 
@@ -724,7 +724,7 @@ The implemented test suite covers the major functionality of the system, includi
 
 ---
 
-# 📈 Performance Evaluation
+# Performance Evaluation
 
 The underlying approach evaluates indexing and retrieval with respect to:
 
@@ -750,7 +750,7 @@ These measurements demonstrate the benefit of combining **parallel processing fo
 
 ---
 
-# 🖥️ User Interface
+# User Interface
 
 ### Initial Window
 
@@ -766,7 +766,7 @@ The output interface presents retrieved files according to their relevance to th
 
 ---
 
-# 🔐 Privacy and Offline Processing
+# Privacy and Offline Processing
 
 SmartLex is designed as an offline/local retrieval system.
 
@@ -785,7 +785,7 @@ The framework intentionally focuses on **lightweight lexical and visual retrieva
 
 ---
 
-# ⚠️ Limitations
+# Limitations
 
 Although SmartLex provides content-based text and image retrieval, some limitations remain.
 
@@ -809,7 +809,7 @@ Although SmartLex provides content-based text and image retrieval, some limitati
 
 ---
 
-# 🚀 Future Scope
+# Future Scope
 
 Potential extensions include:
 
@@ -829,7 +829,7 @@ These extensions can be introduced while retaining the current offline-first arc
 
 ---
 
-# 📚 Project Contributions
+# Project Contributions
 
 The project follows a modular development structure covering:
 
@@ -844,7 +844,7 @@ The repository includes implementation, testing, documentation, and architectura
 
 ---
 
-# 📖 Documentation
+# Documentation
 
 Additional documentation is available in:
 
@@ -860,7 +860,7 @@ docs/image_search.md
 
 ---
 
-# 🧾 License
+# License
 
 This project is distributed under the license specified in:
 
@@ -872,7 +872,7 @@ Please refer to that file for the applicable terms and conditions.
 
 ---
 
-# 🎯 Summary
+# Summary
 
 SmartLex provides a **lightweight, offline, content-based retrieval framework** for local documents and images.
 
@@ -896,7 +896,7 @@ By combining efficient lexical retrieval with visual similarity search, SmartLex
 
 ---
 
-## 👥 Contributors
+## Contributors
 
 This project was developed as a collaborative academic project.
 

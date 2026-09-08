@@ -1,8 +1,24 @@
 import os
+import sys
 from pathlib import Path
 from smartlex.core.logger import setup_logger
 
 logger = setup_logger("media_extractor")
+
+# ── Tesseract binary auto-detection ────────────────────────────────────────
+# On Windows, winget installs Tesseract to a fixed path that may not yet be
+# in the *current* PATH (requires shell restart).  We set the cmd explicitly
+# so pytesseract works immediately after installation without a reboot.
+def _find_tesseract_cmd():
+    if sys.platform == "win32":
+        candidates = [
+            r"C:\Program Files\Tesseract-OCR\tesseract.exe",
+            r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
+        ]
+        for p in candidates:
+            if Path(p).exists():
+                return p
+    return "tesseract"  # fall back to PATH on Linux / macOS
 
 
 def extract_image_text(file_path):
@@ -13,6 +29,7 @@ def extract_image_text(file_path):
         import pytesseract
         from PIL import Image
 
+        pytesseract.pytesseract.tesseract_cmd = _find_tesseract_cmd()
         img = Image.open(file_path)
         text = pytesseract.image_to_string(img)
         return text
