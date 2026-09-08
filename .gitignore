@@ -12,3 +12,4 @@ autocomplete_words.json
 /dist
 *.spec
 *.egg-info
+deferred_index.json
